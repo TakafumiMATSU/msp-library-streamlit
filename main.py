@@ -1,16 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import streamlit as st
 import pandas as pd
 import re
 import duckdb
 import plotly.graph_objects as go
-from rdkit import Chem
-from rdkit.Chem import Draw
 from io import BytesIO
 
 # ダークテーマの適用
@@ -169,14 +161,9 @@ def plot_msms_spectrum_interactive(msms_data, compound_name):
 
     st.plotly_chart(fig, use_container_width=True)
 
-# SMILESから構造式を描画する関数
+# SMILESから構造式を描画する関数を無効化
 def draw_structure(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    if mol:
-        img = Draw.MolToImage(mol, size=(500, 500), kekulize=True)  # サイズと解像度を大きく設定
-        buf = BytesIO()
-        img.save(buf, format="PNG")
-        st.image(buf.getvalue(), use_column_width=True)
+    st.write("SMILES structure rendering is currently disabled.")
 
 # Streamlitアプリのレイアウト
 st.title('MSP Library Search Tool')
@@ -239,7 +226,7 @@ if uploaded_file is not None:
 
         st.session_state.selected_name = selected_name
 
-        # 選択された化合物のMSMSスペクトルと構造式を表示
+        # 選択された化合物のMSMSスペクトルを表示
         if st.session_state.selected_name:
             selected_row = st.session_state.filtered_data[st.session_state.filtered_data['NAME'] == st.session_state.selected_name].iloc[0]
             msms_data = selected_row['MSMS']
@@ -247,7 +234,7 @@ if uploaded_file is not None:
 
             plot_msms_spectrum_interactive(msms_data, st.session_state.selected_name)
             st.subheader('Molecular Structure')
-            draw_structure(smiles)
+            draw_structure(smiles)  # 無効化された関数が呼ばれる
 
     st.sidebar.header('Download Filtered Data')
     if not st.session_state.filtered_data.empty and st.sidebar.button('Download CSV'):
@@ -258,4 +245,3 @@ if uploaded_file is not None:
             file_name='filtered_data.csv',
             mime='text/csv'
         )
-
