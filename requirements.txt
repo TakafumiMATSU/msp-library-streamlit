@@ -2,4 +2,4 @@ streamlit
 pandas
 duckdb
 plotly
-rdkit-pypi
+# rdkit-pypi (一時的にコメントアウト)
